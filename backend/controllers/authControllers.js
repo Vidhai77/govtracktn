@@ -13,7 +13,7 @@ export const registerController = asyncHandler(async (req, res) => {
   const normalizedEmail = email.toLowerCase();
 
   // Validate role
-  const validRoles = ['Collector', 'Department_Head', 'Tender_Group', 'Admin'];
+  const validRoles = ['Collector', 'Department_Head', 'Tender_Group'];
   if (!validRoles.includes(role)) {
     return res.status(400).json({ message: 'Invalid role specified' });
   }
@@ -46,7 +46,7 @@ export const registerController = asyncHandler(async (req, res) => {
     password: hashedPassword,
     role,
     department: role === 'Tender_Group' ? null : department,
-    district: role === 'Tender_Group' ? null : department,
+    district: role === 'Tender_Group'  ? null : department,
   });
 
   if (user) {
@@ -111,6 +111,7 @@ export const loginController = asyncHandler(async (req, res) => {
     department: user.department,
     district: user.district,
     token: generateToken(user._id),
+    message: 'Login Successful'
   });
 });
 

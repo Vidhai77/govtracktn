@@ -34,7 +34,6 @@ const userSchema = new mongoose.Schema({
     trim: true,
     unique: true,
   },
-
   lastLogin: {
     type: Date,
   },

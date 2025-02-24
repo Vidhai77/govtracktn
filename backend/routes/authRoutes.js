@@ -1,5 +1,4 @@
 //Authentication routes
-//
 
 import express from 'express';
 import { loginController, registerController } from '../controllers/authControllers.js';
