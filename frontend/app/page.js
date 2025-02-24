@@ -31,6 +31,7 @@ const Home = () => {
         email,
         password
       });
+        console.log(response.data);
 
       const { token, role: backendRole } = response.data;
       
@@ -39,15 +40,14 @@ const Home = () => {
       }
 
       // Validate selected role
-      if (
-        (role === "collector" && backendRole !== "Collector") ||
-        (role === "tenderer" && backendRole !== "Tender_Group") || 
-        (role === "dhead" && backendRole !== "Department_Head")
+if (
+  (role === "gov" && backendRole !== "Collector" && backendRole !== "Department_Head") ||
+  (role === "tenderer" && backendRole !== "Tender_Group")
+) {
+  alert("Selected role does not match your account role. Please select the correct role.");
+  return;
+}
 
-      ) {
-        alert("Selected role does not match your account role. Please select the correct role.");
-        return;
-      }
 
       // Route based on backend role
       if (backendRole === "Collector") {
@@ -81,11 +81,11 @@ const Home = () => {
           }}
         >
           <option value="">-- Select Role --</option>
-          <option value="collector">Government Officials</option>
+          <option value="gov">Government Officials</option>
           <option value="tenderer">Tenderer</option>
         </select>
 
-        {role === "collector" && (
+        {role === "gov" && (
           <select 
             className="mt-2 p-2 rounded-md border border-gray-300 w-full text-center" 
             value={district} 
