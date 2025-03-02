@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
 // components/Navbar.js
-import Link from 'next/link';
+import Link from "next/link";
 
 const Navbar = () => {
   return (
     <nav className="bg-white text-black p-4 flex items-center justify-around top-0 sticky">
       {/* Left Section */}
       <div className="flex items-center space-x-2">
-        <img 
+        <img
           src="https://upload.wikimedia.org/wikipedia/commons/8/81/TamilNadu_Logo.svg" // Ensure the image is in the public folder
-          alt="TN Govt Logo" 
+          alt="TN Govt Logo"
           className="size-16"
         />
         <div className="text-blue-700">
@@ -19,25 +19,30 @@ const Navbar = () => {
         </div>
       </div>
 
-      <h1 className='text-2xl font-bold'>GovTrackTN</h1>
+      <h1 className="text-2xl font-bold text-green-600">GovTrackTN</h1>
 
       {/* Center Section */}
       <div className="flex gap-10 items-center text-center">
-        <img 
+        <img
           src="/Thiruvalluvar.png" // Ensure the image is in the public folder
-          alt="Thiruvalluvar" 
+          alt="Thiruvalluvar"
           className="size-20 mb-1"
         />
         <span className="text-orange-700 font-semibold">
-          உள்ளவை தெல்லாம் உயர் விள்ளல் மற்று<br />
+          உள்ளவை தெல்லாம் உயர் விள்ளல் மற்று
+          <br />
           தள்ளினுஞ் தள்ளாமை நீர்த்து
         </span>
       </div>
 
       {/* Right Section - Links */}
       <div className="space-x-4 text-blue-700 font-semibold">
-        <Link href="/dummy1" className="hover:underline">Home</Link>
-        <Link href="/dummy2" className="hover:underline">About</Link>
+        <Link href="/page" className="hover:underline">
+          Home
+        </Link>
+        <Link href="/dummy2" className="hover:underline">
+          About
+        </Link>
       </div>
     </nav>
   );
