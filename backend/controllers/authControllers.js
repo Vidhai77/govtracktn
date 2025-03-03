@@ -3,122 +3,134 @@ import asyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/generateToken.js';
 
+// Constants
+const VALID_ROLES = ['Collector', 'Department_Head', 'Tender_Group'];
+const SALT_ROUNDS = 12;
+
+// Helper function for validation
+const validateUserInput = ({ role, department, district }) => {
+  if (!VALID_ROLES.includes(role)) {
+    throw new Error('Invalid role specified');
+  }
+  
+  if (role !== 'Tender_Group' && !department) {
+    throw new Error('Department is required for this role');
+  }
+  
+  if (!district) {
+    throw new Error('District is required');
+  }
+};
+
 // @desc    Register a new user
 // @route   POST /api/users/register
 // @access  Public
 export const registerController = asyncHandler(async (req, res) => {
   const { name, email, phone, password, role, department, district } = req.body;
-
-  // Convert email to lowercase
   const normalizedEmail = email.toLowerCase();
 
-  // Validate role
-  const validRoles = ['Collector', 'Department_Head', 'Tender_Group'];
-  if (!validRoles.includes(role)) {
-    return res.status(400).json({ message: 'Invalid role specified' });
+  // Validate inputs
+  try {
+    validateUserInput({ role, department, district });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
   }
 
-  // Ensure department is provided for specific roles
-  if (role !== 'Admin' && !department) {
-    return res.status(400).json({ message: 'Department is required for this role' });
-  }
-
-  // Ensure district is provided
-  if (!district) {
-    return res.status(400).json({ message: 'District is required' });
-  }
-
-  // Check if email or phone already exists
-  const userExists = await User.findOne({ $or: [{ email: normalizedEmail }, { phone }] });
+  // Check for existing user
+  const userExists = await User.findOne({
+    $or: [{ email: normalizedEmail }, { phone }]
+  });
+  
   if (userExists) {
     return res.status(400).json({ message: 'Email or phone number already in use' });
   }
 
-  // Hash the password
-  const salt = await bcrypt.genSalt(12);
-  const hashedPassword = await bcrypt.hash(password, salt);
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
-  // Create new user
+  // Create user with conditional fields
   const user = await User.create({
     name,
     email: normalizedEmail,
     phone,
     password: hashedPassword,
     role,
-    department: role === 'Tender_Group' ? null : department,
-    district: role === 'Tender_Group'  ? null : department,
+    ...(role !== 'Tender_Group' && {
+      department,
+      district
+    })
   });
 
-  if (user) {
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      role: user.role,
-      department: user.department,
-      district: user.district,
-      token: generateToken(user._id),
-    });
-  } else {
-    res.status(500).json({ message: 'Server error. Could not create user.' });
+  // Response
+  if (!user) {
+    throw new Error('Server error. Could not create user.');
   }
+
+  const userResponse = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    role: user.role,
+    department: user.department,
+    district: user.district,
+    token: generateToken(user._id)
+  };
+
+  res.status(201).json(userResponse);
 });
-
-/* 
-Sample request body for Register:
-{
-  "name": "Arun Kuwmar",
-  "email": "arun.kuwmaasr@gov.in",
-  "phone" : "+91109424234",
-  "password": "SecurePass123!",
-  "role": "Department_Head",
-  "department": "Public Works",
-  "district" : "Madurai"
-  
-}
-
- */
 
 // @desc    Login user
 // @route   POST /api/users/login
 // @access  Public
 export const loginController = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  // Find user by email or phone
+  const normalizedEmail = email.toLowerCase();
 
-  const user = await User.findOne({ email: email.toLowerCase() });
-  if (!user) {
-    return res.status(400).json({ message: 'Invalid credentials' });
+  // Find user and select only necessary fields
+  const user = await User.findOne({ email: normalizedEmail })
+    .select('+password'); // Explicitly select password field
+
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return res.status(401).json({ message: 'Invalid credentials' });
   }
 
-  // Check if password matches
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return res.status(400).json({ message: 'Invalid credentials' });
-  }
-
-  // Update `updatedAt` field when user logs in
+  // Update last login
   user.updatedAt = new Date();
   await user.save();
 
-  res.json({
+  // Prepare response
+  const userResponse = {
     _id: user._id,
     name: user.name,
-    email: user.email.toLowerCase(),
+    email: user.email,
     phone: user.phone,
     role: user.role,
     department: user.department,
     district: user.district,
     token: generateToken(user._id),
-    message: 'Login Successful'
-  });
+    message: 'Login successful'
+  };
+
+  res.json(userResponse);
 });
 
-/*
-    * Sample request body for Login:
-    {
- "email": "arun.kuwmaasr@gov.in",
-  "password": "SecurePass123!",
+/* Sample request bodies:
 
+// Register:
+{
+  "name": "Arun Kumar",
+  "email": "arun.kumar@gov.in",
+  "phone": "+91109424234",
+  "password": "SecurePass123!",
+  "role": "Department_Head",
+  "department": "Public Works",
+  "district": "Madurai"
+}
+
+// Login:
+{
+  "email": "arun.kumar@gov.in",
+  "password": "SecurePass123!"
+}
 */

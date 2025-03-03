@@ -5,45 +5,49 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    maxlength: 32,
+    maxlength: 32
   },
   email: {
     type: String,
     required: true,
     trim: true,
     unique: true,
+    lowercase: true
   },
   password: {
     type: String,
-    required: true,
+    required: true
   },
   role: {
     type: String,
     required: true,
-    enum: ['Collector', 'Department_Head', 'Tender_Group'],
+    enum: ['Collector', 'Department_Head', 'Tender_Group']
   },
   department: {
     type: String,
+    trim: true
   },
   district: {
     type: String,
-    trim: true,
+    trim: true
   },
   phone: {
     type: String,
     trim: true,
-    unique: true,
+    unique: true
   },
   lastLogin: {
-    type: Date,
+    type: Date
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
   updatedAt: {
-    type: Date,
-  },
+    type: Date
+  }
+}, {
+  timestamps: true
 });
 
 export default mongoose.model('User', userSchema);
