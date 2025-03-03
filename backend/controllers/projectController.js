@@ -39,11 +39,36 @@ export const createProjectByCollector = asyncHandler(async (req, res) => {
 
     console.log(departmentHead);
     
-    if (!name || !description || !status || !startDate || !deadline || !budget || !department ) {
-      res.status(400);
-      throw new Error('Please add all fields');
+   if(!name){
+        res.status(400);
+        throw new Error('Name is required');
     }
 
+   if(!description){
+        res.status(400);
+        throw new Error('Description is required');
+    }
+   if(!status){
+        res.status(400);
+        throw new Error('Status is required');
+    }
+    if(!startDate){
+        res.status(400);
+        throw new Error('Start Date is required');
+    }
+    if(!deadline){
+        res.status(400);
+        throw new Error('Deadline is required');
+    }
+    if(!department){
+        res.status(400);
+        throw new Error('Department is required');
+    }
+    if(!budget){
+        res.status(400);
+        throw new Error('Budget is required');
+    }
+    
 
     console.log(req.user.district);
     
