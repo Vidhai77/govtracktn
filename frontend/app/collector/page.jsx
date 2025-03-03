@@ -13,6 +13,7 @@ const Page = () => {
       try {
         const res = await fetch("http://localhost:5000/api/projects"); 
         const data = await res.json();
+        console.log(data);
         setProjects(data);
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -29,25 +30,39 @@ const Page = () => {
   };
 
   const handleUpdate = (id) => {
-    console.log("Update project:", id);
+    router.push(`/project_edit/${id}`);
   };
+  
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this project?");
     if (!confirmDelete) return;
-
+  
     try {
-      await fetch(`/api/projects/${id}`, { method: "DELETE" });
-      setProjects((prevProjects) => prevProjects.filter((project) => project._id !== id));
-      console.log("Project deleted:", id);
+      const response = await fetch(`http://localhost:5000/api/projects/${id}`, { 
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response.ok) {
+        setProjects((prevProjects) => prevProjects.filter((project) => project._id !== id));
+        alert("Project deleted successfully!");
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message || "Failed to delete project"}`);
+      }
     } catch (error) {
       console.error("Error deleting project:", error);
+      alert("An error occurred while deleting the project. Please try again.");
     }
   };
+  
 
   const filteredProjects = projects.filter(
     (project) =>
-      project?.title?.toLowerCase().includes(search.toLowerCase()) ||
+      project?.name?.toLowerCase().includes(search.toLowerCase()) ||
       project?._id?.includes(search)
   );
 

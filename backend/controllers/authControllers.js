@@ -115,22 +115,3 @@ export const loginController = asyncHandler(async (req, res) => {
   res.json(userResponse);
 });
 
-/* Sample request bodies:
-
-// Register:
-{
-  "name": "Arun Kumar",
-  "email": "arun.kumar@gov.in",
-  "phone": "+91109424234",
-  "password": "SecurePass123!",
-  "role": "Department_Head",
-  "department": "Public Works",
-  "district": "Madurai"
-}
-
-// Login:
-{
-  "email": "arun.kumar@gov.in",
-  "password": "SecurePass123!"
-}
-*/

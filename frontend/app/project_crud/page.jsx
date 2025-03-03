@@ -1,18 +1,30 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
   const [budget, setBudget] = useState("");
-  const [startingDate, setStartingDate] = useState("");
+  const [startDate, setStartDate] = useState("");
   const [deadline, setDeadline] = useState("");
   const [assignedDepartment, setAssignedDepartment] = useState("");
+  const [authToken, setAuthToken] = useState("");
 
+  // Retrieve authToken from localStorage on component mount
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      setAuthToken(token);
+    }
+  }, []);
+
+  const router = useRouter();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const projectData = {
@@ -20,30 +32,38 @@ const Page = () => {
       description,
       status,
       budget,
-      startingDate,
+      startDate,
       deadline,
-      assignedDepartment,
+      department: assignedDepartment,
     };
 
     try {
-      const response = await axios.post(process.env.NEXT_PUBLIC_BACKEND_URL+"projects/", projectData);
-
+      const response = await axios.post(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "projects/",
+        projectData,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
       console.log("Response:", response.data);
       alert("Project added successfully!");
-      
+
       // Reset the form fields
       setName("");
       setDescription("");
       setStatus("");
       setBudget("");
-      setStartingDate("");
+      setStartDate("");
       setDeadline("");
       setAssignedDepartment("");
     } catch (error) {
       console.error("Error submitting project:", error);
       alert("Failed to add project. Please try again.");
     }
+    router.push('/collector')
   };
 
   return (
@@ -82,24 +102,24 @@ const Page = () => {
           </div>
 
           <div>
-            <div>
-              <label htmlFor="status" className="block text-gray-600 mb-1">
-                Status
-              </label>
-              <select
-                id="status"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="w-full p-2 border rounded"
-                required
-              >
-                <option value="" disabled>Select Status</option>
-                <option value="Not Started">Planning</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-                <option value="On Hold">On Hold</option>
-              </select>
-            </div>
+            <label htmlFor="status" className="block text-gray-600 mb-1">
+              Status
+            </label>
+            <select
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="w-full p-2 border rounded"
+              required
+            >
+              <option value="" disabled>
+                Select Status
+              </option>
+              <option value="Planning">Planning</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="On Hold">On Hold</option>
+            </select>
           </div>
 
           <div>
@@ -124,8 +144,8 @@ const Page = () => {
             <input
               id="startingDate"
               type="date"
-              value={startingDate}
-              onChange={(e) => setStartingDate(e.target.value)}
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
               className="w-full p-2 border rounded"
               required
             />
@@ -146,25 +166,25 @@ const Page = () => {
           </div>
 
           <div>
-            <div>
-              <label htmlFor="status" className="block text-gray-600 mb-1">
-                Department
-              </label>
-              <select
-                id="status"
-                value={assignedDepartment}
-                onChange={(e) => setAssignedDepartment(e.target.value)}
-                className="w-full p-2 border rounded"
-                required
-              >
-                <option value="" disabled>Select Department</option>
-                <option value="Rev">Revenue</option>
-                <option value="PW">Public Works</option>
-                <option value="Edu">Education</option>
-                <option value="Agri">Agriculture</option>
-                <option value="Health">Health</option>
-              </select>
-            </div>
+            <label htmlFor="assignedDepartment" className="block text-gray-600 mb-1">
+              Department
+            </label>
+            <select
+              id="assignedDepartment"
+              value={assignedDepartment}
+              onChange={(e) => setAssignedDepartment(e.target.value)}
+              className="w-full p-2 border rounded"
+              required
+            >
+              <option value="" disabled>
+                Select Department
+              </option>
+              <option value="Rev">Revenue</option>
+              <option value="PW">Public Works</option>
+              <option value="Edu">Education</option>
+              <option value="Agri">Agriculture</option>
+              <option value="Health">Health</option>
+            </select>
           </div>
 
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
