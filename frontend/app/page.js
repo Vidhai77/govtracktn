@@ -157,7 +157,7 @@ const Home = () => {
       </div>
 
       {/* Project Concept Section */}
-      <div className="mt-16 p-6 bg-gray-100 text-gray-800 w-[90%] mx-auto rounded-lg shadow-md text-justify">
+      <div id="about" className="mt-16 pt-32 p-6 bg-gray-100 text-gray-800 w-[90%] mx-auto rounded-lg shadow-md text-justify">
         <h2 className="text-3xl font-bold text-center text-green-700">
           GovTrack TN - A Smarter Way to Manage Government Projects
         </h2>

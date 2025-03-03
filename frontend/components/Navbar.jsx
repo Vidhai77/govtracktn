@@ -37,10 +37,10 @@ const Navbar = () => {
 
       {/* Right Section - Links */}
       <div className="space-x-4 text-blue-700 font-semibold">
-        <Link href="/page" className="hover:underline">
+        <Link href="/" className="hover:underline">
           Home
         </Link>
-        <Link href="/dummy2" className="hover:underline">
+        <Link href="/#about" className="hover:underline">
           About
         </Link>
       </div>
