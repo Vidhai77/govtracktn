@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 
 const EditProject = () => {
   const router = useRouter();
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [project, setProject] = useState({
     name: "",
     description: "",
@@ -31,7 +31,7 @@ const EditProject = () => {
   }, [id]);
 
   const handleChange = (e) => {
-    setProject({ ...project, [e.target.name]: e.target.value });
+    setProject({ ...project, [e.target.name]: e.target.value || project[e.target.name] });
   };
 
   const handleSubmit = async (e) => {
@@ -58,29 +58,76 @@ const EditProject = () => {
   return (
     <>
       <Navbar />
-      <div className="p-4 max-w-lg mx-auto">
-        <h2 className="text-xl font-bold mb-4">Edit Project</h2>
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <input name="name" value={project.name} onChange={handleChange} placeholder="Name" required />
-          <textarea name="description" value={project.description} onChange={handleChange} placeholder="Description" required />
-          <input name="budget" type="number" value={project.budget} onChange={handleChange} placeholder="Budget" required />
-          <select name="status" value={project.status} onChange={handleChange} required>
+      <div className="p-6 max-w-2xl mx-auto bg-white shadow-lg rounded-lg mt-6">
+        <h2 className="text-2xl font-semibold text-center mb-6">Edit Project</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            name="name"
+            value={project.name}
+            onChange={handleChange}
+            placeholder="Project Name"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <textarea
+            name="description"
+            value={project.description}
+            onChange={handleChange}
+            placeholder="Project Description"
+            className="w-full p-2 border rounded h-24 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <input
+            name="budget"
+            type="number"
+            value={project.budget}
+            onChange={handleChange}
+            placeholder="Budget"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <select
+            name="status"
+            value={project.status}
+            onChange={handleChange}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
             <option value="">Select Status</option>
             <option value="Not Started">Planning</option>
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
             <option value="On Hold">On Hold</option>
           </select>
-          <input name="startDate" type="date" value={project.startDate} onChange={handleChange} required />
-          <input name="deadline" type="date" value={project.deadline} onChange={handleChange} required />
-          <select name="department" value={project.department} onChange={handleChange} required>
+          <input
+            name="startDate"
+            type="date"
+            value={project.startDate}
+            onChange={handleChange}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <input
+            name="deadline"
+            type="date"
+            value={project.deadline}
+            onChange={handleChange}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <select
+            name="department"
+            value={project.department}
+            onChange={handleChange}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option value="">Select Department</option>
             <option value="Rev">Revenue</option>
             <option value="PW">Public Works</option>
             <option value="Edu">Education</option>
             <option value="Agri">Agriculture</option>
             <option value="Health">Health</option>
           </select>
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Update Project</button>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition"
+          >
+            Update Project
+          </button>
         </form>
       </div>
     </>
