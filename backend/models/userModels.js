@@ -45,7 +45,16 @@ const userSchema = new mongoose.Schema({
   },
   updatedAt: {
     type: Date
-  }
+  },
+  projectAssigned : {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+
+  },
+  budget: {
+    type: Number,
+    default: 0
+  },
 }, {
   timestamps: true
 });

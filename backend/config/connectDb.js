@@ -102,3 +102,12 @@ export const connectDb = async () => {
 //
 // // Execute the function
 // createUsers();
+
+
+
+
+//Rev
+//PW
+//Health
+//Edu
+//Agri

@@ -2,6 +2,7 @@ import Project from '../models/projectModel.js';
 import User from '../models/userModels.js';
 import asyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
 
 // @desc    Fetch all projects
 // @route   GET /api/projects
@@ -30,20 +31,36 @@ export const getProjectById = asyncHandler(async (req, res) => {
 // @access  Private
 // createProjectByCollector
 export const createProjectByCollector = asyncHandler(async (req, res) => {
-    const { name, description, status, startDate, deadline, district, department, departmentHead } = req.body;
+    const { name, description, status, startDate, deadline, department,budget } = req.body;
   
+    console.log(req.user);
+    
+    const departmentHead =await User.findOne({ role: 'Department_Head' ,district:req.user.district });
+
+    console.log(departmentHead);
+    
+    if (!name || !description || !status || !startDate || !deadline || !budget || !department ) {
+      res.status(400);
+      throw new Error('Please add all fields');
+    }
+
+
+    console.log(req.user.district);
+    
     const project = new Project({
       name,
       description,
       status,
+      budget,
       startDate,
       deadline,
-      district,
+      district : req.user.district,
       department,
       departmentHead,
       createdBy: req.user ? req.user._id : null // Use null if no user
     });
   
+    console.log(project);
     const createdProject = await project.save();
     res.status(201).json(createdProject);
   });
@@ -54,34 +71,51 @@ export const createProjectByCollector = asyncHandler(async (req, res) => {
 export const assignProjectToTenderer = asyncHandler(async (req, res) => {
     const { name, email, phone } = req.body;
 
-    // Check if tenderer exists, if not create new one
-    let tenderer = await User.findOne({ email });
+    // Start MongoDB transaction
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    if (!tenderer) {
-        const salt = await bcrypt.genSalt(12);
-        const hashedPassword = await bcrypt.hash("password", salt);
+    try {
+        let tenderer = await User.findOne({ email }).session(session);
 
-        tenderer = new User({
-            name,
-            email,
-            phone,
-            role: 'Tender_Group',
-            password: hashedPassword
-        });
+        if (!tenderer) {
+            const salt = await bcrypt.genSalt(12);
+            const hashedPassword = await bcrypt.hash("password", salt);
 
-        await tenderer.save();
+            tenderer = new User({
+                name,
+                email,
+                phone,
+                role: 'Tender_Group',
+                password: hashedPassword
+            });
+
+            await tenderer.save({ session });
+        }
+
+        const project = await Project.findById(req.params.id).session(session);
+        if (!project) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        project.tenderer = tenderer._id;
+        tenderer.assignedProject = project._id;
+
+        await Promise.all([tenderer.save({ session }), project.save({ session })]);
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.json(project);
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(500).json({ error: error.message });
     }
-
-    const project = await Project.findById(req.params.id);
-    if (!project) {
-        res.status(404);
-        throw new Error('Project not found');
-    }
-
-    project.tenderer = tenderer._id;
-    const updatedProject = await project.save();
-    res.json(updatedProject);
 });
+
 
 // @desc    Update a project
 // @route   PUT /api/projects/:id
@@ -168,3 +202,5 @@ export const getProjectsByTenderer = asyncHandler(async (req, res) => {
     const projects = await Project.find({ tenderer: req.params.tenderer });
     res.json(projects);
 });
+
+
