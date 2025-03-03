@@ -1,0 +1,26 @@
+meta {
+  name: delete project
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:5000/api/projects/67c457f13b09a243b6684dd1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Project 1",
+    "description": "This is project 1",
+    "status": "In Progress",
+    "startDate": "2021-10-01",
+    "deadline": "2021-12-01",
+    "district": "Kathmandu",
+    "department": "Department 1",
+    "departmentHead": "615f3f7c3d9f4f7c7c3d9f4f",
+    "tenderer": "615f3f7c3d9f4f7c7c3d9f4f",
+    "createdBy": "615f3f7c3d9f4f7c7c3d9f4f"
+  }
+}

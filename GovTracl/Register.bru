@@ -1,0 +1,22 @@
+meta {
+  name: Register
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5000/api/auth/login
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2M0NjFiYTRmMDk3N2E3YzE5NGI3OWEiLCJpYXQiOjE3NDA5MjY1MDIsImV4cCI6MTc0MzUxODUwMn0.u454i7CPN81RVPFQ1Xkfpc-Anr1apT8j1uPJb-sPyeI
+}
+
+body:json {
+  {
+  "email" : "collector.collector.chennai@tn.gov.in",
+    "password"  : "password"
+  }
+}

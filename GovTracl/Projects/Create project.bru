@@ -1,0 +1,27 @@
+meta {
+  name: Create project
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:5000/api/projects/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2M0NjFiYTRmMDk3N2E3YzE5NGI3OWEiLCJpYXQiOjE3NDA5MjY1MDIsImV4cCI6MTc0MzUxODUwMn0.u454i7CPN81RVPFQ1Xkfpc-Anr1apT8j1uPJb-sPyeI
+}
+
+body:json {
+  {
+    "name": "Bridge Construction",
+    "description": "New bridge over river",
+    "status": "Planning",
+    "startDate": "2025-03-10",
+    "deadline": "2025-12-31",
+    "budget" : 5000,
+    "department": "PW"
+  }
+}
