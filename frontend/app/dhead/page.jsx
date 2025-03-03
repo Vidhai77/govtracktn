@@ -5,16 +5,17 @@ import { useRouter } from "next/navigation";
 
 const DepartmentHeadPage = () => {
   const router = useRouter();
-  const [projects, setProjects] = useState([]); // Ensure projects is an array
+  const [projects, setProjects] = useState([]);
   const [search, setSearch] = useState("");
+  const [tenderers, setTenderers] = useState({}); // Store tenderer details
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/projects");
         const data = await res.json();
-        console.log("Fetched Projects:", data); // Debugging: Ensure correct data format
-        setProjects(Array.isArray(data) ? data : []); // Prevents issues if response is not an array
+        console.log("Fetched Projects:", data);
+        setProjects(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
@@ -23,13 +24,36 @@ const DepartmentHeadPage = () => {
     fetchProjects();
   }, []);
 
-  const filteredProjects = Array.isArray(projects)
-    ? projects.filter(
-        (project) =>
-          project?.name?.toLowerCase().includes(search.toLowerCase()) ||
-          project?._id?.includes(search)
-      )
-    : [];
+  useEffect(() => {
+    const fetchTenderers = async () => {
+      const tendererData = {};
+      await Promise.all(
+        projects.map(async (project) => {
+          if (project.tenderer) {
+            try {
+              const res = await fetch(`http://localhost:5000/api/users/${project.tenderer}`);
+              const data = await res.json();
+              tendererData[project._id] = data.name || "Unknown"; // Store name
+            } catch (error) {
+              console.error(`Error fetching tenderer ${project.tenderer}:`, error);
+              tendererData[project._id] = "Error fetching";
+            }
+          }
+        })
+      );
+      setTenderers(tendererData);
+    };
+
+    if (projects.length > 0) {
+      fetchTenderers();
+    }
+  }, [projects]);
+
+  const filteredProjects = projects.filter(
+    (project) =>
+      project?.name?.toLowerCase().includes(search.toLowerCase()) ||
+      project?._id?.includes(search)
+  );
 
   return (
     <>
@@ -37,11 +61,6 @@ const DepartmentHeadPage = () => {
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-bold">Department Projects</h1>
-          <button 
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Assign Tenderer
-          </button>
         </div>
 
         <div className="mb-4 flex gap-2">
@@ -60,6 +79,7 @@ const DepartmentHeadPage = () => {
               <th className="border p-2">Title</th>
               <th className="border p-2">Description</th>
               <th className="border p-2">Status</th>
+              <th className="border p-2">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -68,6 +88,18 @@ const DepartmentHeadPage = () => {
                 <td className="border p-2">{project?.name}</td>
                 <td className="border p-2">{project?.description}</td>
                 <td className="border p-2">{project?.status}</td>
+                <td className="border p-2">
+                  {tenderers[project._id] ? (
+                    <span>{tenderers[project._id]}</span>
+                  ) : (
+                    <button
+                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+                      onClick={() => router.push(`/assign_tender?id=${project._id}`)}
+                    >
+                      Assign Tenderer
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

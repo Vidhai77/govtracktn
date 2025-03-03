@@ -40,9 +40,9 @@ const Navbar = () => {
         <Link href="/" className="hover:underline">
           Home
         </Link>
-        <Link href="/#about" className="hover:underline">
-          About
-        </Link>
+        <button  href="/#about"  className="hover:underline">
+          Logout
+        </button>
       </div>
     </nav>
   );

@@ -62,10 +62,11 @@ const Home = () => {
         }
       );
 
-      const { token, role: backendRole } = response.data;
+      const { token, role: backendRole ,district} = response.data;
 
       if (token) {
         localStorage.setItem("authToken", token);
+        localStorage.setItem("district" , district)
       }
 
       if (
@@ -81,7 +82,7 @@ const Home = () => {
       }
 
       if (backendRole === "Collector") {
-        router.push("/collector");
+        router.push(`collector`);
       } else if (backendRole === "Department_Head") {
         router.push("/dhead");
       } else if (backendRole === "Tender_Group") {

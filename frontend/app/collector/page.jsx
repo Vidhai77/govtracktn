@@ -3,15 +3,15 @@ import Navbar from "@/components/Navbar";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; 
 
-const Page = () => {
+const Page =() => {
   const router = useRouter();
   const [projects, setProjects] = useState([]);
   const [search, setSearch] = useState("");
-
+  
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/projects"); 
+        const res = await fetch("http://localhost:5000/api/projects/district/"+ localStorage.getItem("district")); 
         const data = await res.json();
         console.log(data);
         setProjects(data);
