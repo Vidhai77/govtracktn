@@ -36,7 +36,6 @@ const projectSchema = new mongoose.Schema({
   },
   departmentHead: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: 'User'
   },
   tenderer: {
