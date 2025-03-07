@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const Navbar = () => {
   return (
-    <nav className="bg-white text-black p-4 flex items-center justify-around top-0 sticky">
+    <nav className="bg-white text-black p-4 flex items-center justify-around top-0 sticky shadow-sm shadow-green-300">
       {/* Left Section */}
       <div className="flex items-center space-x-2">
         <img
@@ -40,7 +40,7 @@ const Navbar = () => {
         <Link href="/" className="hover:underline">
           Home
         </Link>
-        <button  href="/#about"  className="hover:underline">
+        <button href="/#about" className="hover:underline">
           Logout
         </button>
       </div>

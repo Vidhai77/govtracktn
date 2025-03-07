@@ -7,45 +7,9 @@ import Navbar from "../components/Navbar";
 
 const Home = () => {
   const [role, setRole] = useState("");
-  const [district, setDistrict] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-
-  const districts = [
-    "Ariyalur",
-    "Chennai",
-    "Coimbatore",
-    "Cuddalore",
-    "Dharmapuri",
-    "Dindigul",
-    "Erode",
-    "Kallakurichi",
-    "Kancheepuram",
-    "Karur",
-    "Krishnagiri",
-    "Madurai",
-    "Nagapattinam",
-    "Namakkal",
-    "Perambalur",
-    "Pudukkottai",
-    "Ramanathapuram",
-    "Salem",
-    "Sivagangai",
-    "Thanjavur",
-    "The Nilgiris",
-    "Theni",
-    "Thoothukudi",
-    "Tiruchirappalli",
-    "Tirunelveli",
-    "Tiruppur",
-    "Tiruvallur",
-    "Tiruvannamalai",
-    "Tenkasi",
-    "Villupuram",
-    "Virudhunagar",
-    "Vellore",
-  ].sort();
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -62,11 +26,10 @@ const Home = () => {
         }
       );
 
-      const { token, role: backendRole ,district} = response.data;
+      const { token, role: backendRole } = response.data;
 
       if (token) {
         localStorage.setItem("authToken", token);
-        localStorage.setItem("district" , district)
       }
 
       if (
@@ -82,7 +45,7 @@ const Home = () => {
       }
 
       if (backendRole === "Collector") {
-        router.push(`collector`);
+        router.push("/collector");
       } else if (backendRole === "Department_Head") {
         router.push("/dhead");
       } else if (backendRole === "Tender_Group") {
@@ -104,32 +67,14 @@ const Home = () => {
         <select
           className="mt-2 p-2 rounded-md border border-gray-300 w-full text-center"
           value={role}
-          onChange={(e) => {
-            setRole(e.target.value);
-            setDistrict("");
-          }}
+          onChange={(e) => setRole(e.target.value)}
         >
           <option value="">-- Select Role --</option>
           <option value="gov">Government Officials</option>
           <option value="tenderer">Tenderer</option>
         </select>
 
-        {role === "gov" && (
-          <select
-            className="mt-2 p-2 rounded-md border border-gray-300 w-full text-center"
-            value={district}
-            onChange={(e) => setDistrict(e.target.value)}
-          >
-            <option value="">-- Select District --</option>
-            {districts.map((district) => (
-              <option key={district} value={district}>
-                {district}
-              </option>
-            ))}
-          </select>
-        )}
-
-        {(role === "tenderer" || district) && (
+        {role && (
           <div className="flex flex-col w-full gap-4">
             <input
               type="email"
@@ -158,7 +103,7 @@ const Home = () => {
       </div>
 
       {/* Project Concept Section */}
-      <div id="about" className="mt-16 pt-32 p-6 bg-gray-100 text-gray-800 w-[90%] mx-auto rounded-lg shadow-md text-justify">
+      <div className="mt-16 p-6 bg-gray-100 text-gray-800 w-[90%] mx-auto rounded-lg shadow-md text-justify">
         <h2 className="text-3xl font-bold text-center text-green-700">
           GovTrack TN - A Smarter Way to Manage Government Projects
         </h2>
@@ -217,13 +162,13 @@ const Home = () => {
         </h3>
 
         <div className="mt-4 text-lg">
-          <h4 className="font-bold text-green-700">📌 District Collector</h4>
+          <h4 className="font-bold text-green-700">📌 Collector</h4>
           <p>
-            ➡️ The District Collector holds the highest authority within the
-            system, overseeing all government projects within the district. They
-            have the ability to initiate new projects, allocate responsibilities
-            to Department Heads, and review progress updates. Their role ensures
-            strategic decision-making and overall project efficiency.
+            ➡️ The Collector holds the highest authority within the system,
+            overseeing all government projects. They have the ability to
+            initiate new projects, allocate responsibilities to Department
+            Heads, and review progress updates. Their role ensures strategic
+            decision-making and overall project efficiency.
           </p>
 
           <h4 className="font-bold text-green-700 mt-4">📌 Department Head</h4>
@@ -350,10 +295,9 @@ const Home = () => {
           <li>
             <strong>Healthcare Infrastructure:</strong> The government is
             enhancing medical facilities with projects like AIIMS Madurai and
-            upgraded district hospitals. These initiatives aim to improve
-            healthcare accessibility, especially in rural areas. Modern
-            equipment, digital health records, and telemedicine services are
-            also being introduced.
+            upgraded hospitals. These initiatives aim to improve healthcare
+            accessibility, especially in rural areas. Modern equipment, digital
+            health records, and telemedicine services are also being introduced.
           </li>
         </ul>
 
