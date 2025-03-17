@@ -31,7 +31,7 @@ router.route('/district/:district')
 router.route('/department/:department')
   .get(protect, getProjectsByDepartment); // Public, req.user optional
 
-router.route('/departmentHead/:departmentHead')
+router.route('/departmentHead')
   .get(protect, getProjectsByDepartmentHead); // Public, req.user optional
 
 router.route('/tenderer/:tenderer')

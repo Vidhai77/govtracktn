@@ -69,8 +69,6 @@ export const createProjectByCollector = asyncHandler(async (req, res) => {
         throw new Error('Budget is required');
     }
     
-
-    console.log(req.user.district);
     
     const project = new Project({
       name,
@@ -81,14 +79,30 @@ export const createProjectByCollector = asyncHandler(async (req, res) => {
       deadline,
       district : req.user.district,
       department,
-      departmentHead,
-      createdBy: req.user ? req.user._id : null // Use null if no user
+      departmentHead : departmentHead._id,
+      createdBy: req.user ? req.user._id : null
     });
   
+    departmentHead.projects.push(project._id)
+    await departmentHead.save()
     console.log(project);
     const createdProject = await project.save();
+
     res.status(201).json(createdProject);
   });
+
+//   Sample Request
+{/**
+    name: "Road Construction",
+    description: "Construction of a 10km road",
+    status: "Pending",
+    startDate: "2021-09-01",
+    deadline: "2022-09-01",
+    department: "Works",
+    budget: 1000000
+    
+
+    */}
 
 // @desc    Assign project to tenderer
 // @route   PUT /api/projects/:id/assign-tenderer
@@ -208,7 +222,8 @@ export const getProjectsByDistrict = asyncHandler(async (req, res) => {
 // @route   GET /api/projects/department/:department
 // @access  Public
 export const getProjectsByDepartment = asyncHandler(async (req, res) => {
-    const projects = await Project.find({ department: req.params.department });
+ console.log(req.user);
+    const projects = await Project.find({ department: req.user.department ,  district: req.user.district });
     res.json(projects);
 });
 
@@ -216,7 +231,9 @@ export const getProjectsByDepartment = asyncHandler(async (req, res) => {
 // @route   GET /api/projects/departmentHead/:departmentHead
 // @access  Public
 export const getProjectsByDepartmentHead = asyncHandler(async (req, res) => {
-    const projects = await Project.find({ departmentHead: req.params.departmentHead });
+
+    console.log(req.user._id);
+    const projects = await Project.find({ district: req.user.district, department : req.user.department });
     res.json(projects);
 });
 

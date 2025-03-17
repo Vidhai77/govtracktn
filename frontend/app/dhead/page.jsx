@@ -11,8 +11,9 @@ const DepartmentHeadPage = () => {
 
   useEffect(() => {
     const fetchProjects = async () => {
+        const district = localStorage.getItem("district")
       try {
-        const res = await fetch("http://localhost:5000/api/projects");
+        const res = await fetch(`http://localhost:5000/api/projects/department/${district}`);
         const data = await res.json();
         console.log("Fetched Projects:", data);
         setProjects(Array.isArray(data) ? data : []);

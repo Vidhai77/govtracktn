@@ -51,10 +51,13 @@ const userSchema = new mongoose.Schema({
     ref: 'Project',
 
   },
-  budget: {
-    type: Number,
-    default: 0
-  },
+    projects:{
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Project',
+        default: []
+    }
+
+
 }, {
   timestamps: true
 });

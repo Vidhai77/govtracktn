@@ -38,6 +38,10 @@ const projectSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  budget: {
+    type: Number,
+    default: 0
+  },
   tenderer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
