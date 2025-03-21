@@ -11,7 +11,10 @@ const Home = () => {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    // Prevent default form submission behavior if event exists (for form submission)
+    if (e) e.preventDefault();
+
     if (!email || !password) {
       alert("Email and Password are required!");
       return;
@@ -58,48 +61,62 @@ const Home = () => {
     }
   };
 
+  // Handle Enter key press explicitly for better control
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit(); // Call handleSubmit directly when Enter is pressed
+    }
+  };
+
   return (
     <div>
       <Navbar />
       <hr />
       <div className="flex flex-col w-[50%] mt-20 mx-auto items-center gap-4">
         <h1 className="text-4xl font-bold text-center">Select Your Role</h1>
-        <select
-          className="mt-2 p-2 rounded-md border border-gray-300 w-full text-center"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
+        <form
+          onSubmit={handleSubmit}
+          className="w-full flex flex-col items-center gap-4"
         >
-          <option value="">-- Select Role --</option>
-          <option value="gov">Government Officials</option>
-          <option value="tenderer">Tenderer</option>
-        </select>
+          <select
+            className="mt-2 p-2 rounded-md border border-gray-300 w-full text-center"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            onKeyPress={handleKeyPress} // Add keypress handler to select
+          >
+            <option value="">-- Select Role --</option>
+            <option value="gov">Government Officials</option>
+            <option value="tenderer">Tenderer</option>
+          </select>
 
-        {role && (
-          <div className="flex flex-col w-full gap-4">
-            <input
-              type="email"
-              placeholder="Email"
-              className="p-2 rounded-md border border-gray-300 text-center"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="p-2 rounded-md border border-gray-300 text-center"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-        )}
+          {role && (
+            <div className="flex flex-col w-full gap-4">
+              <input
+                type="email"
+                placeholder="Email"
+                className="p-2 rounded-md border border-gray-300 text-center"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyPress={handleKeyPress} // Add keypress handler to email
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                className="p-2 rounded-md border border-gray-300 text-center"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={handleKeyPress} // Add keypress handler to password
+              />
+            </div>
+          )}
 
-        <button
-          type="button"
-          className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700"
-          onClick={handleSubmit}
-        >
-          Submit
-        </button>
+          <button
+            type="submit"
+            className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700"
+          >
+            Submit
+          </button>
+        </form>
       </div>
 
       {/* Project Concept Section */}
