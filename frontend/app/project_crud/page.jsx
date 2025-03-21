@@ -39,7 +39,8 @@ const Page = () => {
 
     try {
       const response = await axios.post(
-        process.env.NEXT_PUBLIC_BACKEND_URL + "projects/",
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}api/projects/`, // Ensure URL correctness
+
         projectData,
         {
           headers: {

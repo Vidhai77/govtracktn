@@ -11,8 +11,18 @@ const DepartmentHeadPage = () => {
 
   useEffect(() => {
     const fetchProjects = async () => {
+      const district = localStorage.getItem("district");
+      const department = localStorage.getItem("department");
+      const authToken = localStorage.getItem("authToken");
       try {
-        const res = await fetch("http://localhost:5000/api/projects");
+        const res = await fetch(
+          `http://localhost:5000/api/projects/department/${department}`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          },
+        );
         const data = await res.json();
         console.log("Fetched Projects:", data);
         setProjects(Array.isArray(data) ? data : []);
@@ -31,15 +41,20 @@ const DepartmentHeadPage = () => {
         projects.map(async (project) => {
           if (project.tenderer) {
             try {
-              const res = await fetch(`http://localhost:5000/api/users/${project.tenderer}`);
+              const res = await fetch(
+                `http://localhost:5000/api/users/${project.tenderer}`,
+              );
               const data = await res.json();
               tendererData[project._id] = data.name || "Unknown"; // Store name
             } catch (error) {
-              console.error(`Error fetching tenderer ${project.tenderer}:`, error);
+              console.error(
+                `Error fetching tenderer ${project.tenderer}:`,
+                error,
+              );
               tendererData[project._id] = "Error fetching";
             }
           }
-        })
+        }),
       );
       setTenderers(tendererData);
     };
@@ -52,7 +67,7 @@ const DepartmentHeadPage = () => {
   const filteredProjects = projects.filter(
     (project) =>
       project?.name?.toLowerCase().includes(search.toLowerCase()) ||
-      project?._id?.includes(search)
+      project?._id?.includes(search),
   );
 
   return (
@@ -94,7 +109,9 @@ const DepartmentHeadPage = () => {
                   ) : (
                     <button
                       className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
-                      onClick={() => router.push(`/assign_tender?id=${project._id}`)}
+                      onClick={() =>
+                        router.push(`/assign_tender?id=${project._id}`)
+                      }
                     >
                       Assign Tenderer
                     </button>

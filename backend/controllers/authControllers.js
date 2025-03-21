@@ -1,24 +1,24 @@
-import User from '../models/userModels.js';
-import asyncHandler from 'express-async-handler';
-import bcrypt from 'bcryptjs';
-import { generateToken } from '../utils/generateToken.js';
+import User from "../models/userModels.js";
+import asyncHandler from "express-async-handler";
+import bcrypt from "bcryptjs";
+import { generateToken } from "../utils/generateToken.js";
 
 // Constants
-const VALID_ROLES = ['Collector', 'Department_Head', 'Tender_Group'];
+const VALID_ROLES = ["Collector", "Department_Head", "Tender_Group"];
 const SALT_ROUNDS = 12;
 
 // Helper function for validation
 const validateUserInput = ({ role, department, district }) => {
   if (!VALID_ROLES.includes(role)) {
-    throw new Error('Invalid role specified');
+    throw new Error("Invalid role specified");
   }
-  
-  if (role !== 'Tender_Group' && !department) {
-    throw new Error('Department is required for this role');
+
+  if (role !== "Tender_Group" && !department) {
+    throw new Error("Department is required for this role");
   }
-  
+
   if (!district) {
-    throw new Error('District is required');
+    throw new Error("District is required");
   }
 };
 
@@ -38,11 +38,13 @@ export const registerController = asyncHandler(async (req, res) => {
 
   // Check for existing user
   const userExists = await User.findOne({
-    $or: [{ email: normalizedEmail }, { phone }]
+    $or: [{ email: normalizedEmail }, { phone }],
   });
-  
+
   if (userExists) {
-    return res.status(400).json({ message: 'Email or phone number already in use' });
+    return res
+      .status(400)
+      .json({ message: "Email or phone number already in use" });
   }
 
   // Hash password
@@ -55,15 +57,15 @@ export const registerController = asyncHandler(async (req, res) => {
     phone,
     password: hashedPassword,
     role,
-    ...(role !== 'Tender_Group' && {
+    ...(role !== "Tender_Group" && {
       department,
-      district
-    })
+      district,
+    }),
   });
 
   // Response
   if (!user) {
-    throw new Error('Server error. Could not create user.');
+    throw new Error("Server error. Could not create user.");
   }
 
   const userResponse = {
@@ -74,7 +76,7 @@ export const registerController = asyncHandler(async (req, res) => {
     role: user.role,
     department: user.department,
     district: user.district,
-    token: generateToken(user._id)
+    token: generateToken(user._id),
   };
 
   res.status(201).json(userResponse);
@@ -88,11 +90,12 @@ export const loginController = asyncHandler(async (req, res) => {
   const normalizedEmail = email.toLowerCase();
 
   // Find user and select only necessary fields
-  const user = await User.findOne({ email: normalizedEmail })
-    .select('+password'); // Explicitly select password field
+  const user = await User.findOne({ email: normalizedEmail }).select(
+    "+password",
+  ); // Explicitly select password field
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).json({ message: 'Invalid credentials' });
+    return res.status(401).json({ message: "Invalid credentials" });
   }
 
   // Update last login
@@ -109,9 +112,8 @@ export const loginController = asyncHandler(async (req, res) => {
     department: user.department,
     district: user.district,
     token: generateToken(user._id),
-    message: 'Login successful'
+    message: "Login successful",
   };
 
   res.json(userResponse);
 });
-

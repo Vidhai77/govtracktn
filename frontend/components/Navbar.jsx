@@ -40,7 +40,13 @@ const Navbar = () => {
         <Link href="/" className="hover:underline">
           Home
         </Link>
-        <button href="/#about" className="hover:underline">
+        <button
+          className="hover:underline"
+          onClick={() => {
+            localStorage.clear();
+            window.location.href = "/"; // Redirect to home page
+          }}
+        >
           Logout
         </button>
       </div>

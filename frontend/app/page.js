@@ -26,13 +26,14 @@ const Home = () => {
         {
           email,
           password,
-        }
+        },
       );
 
-      const { token, role: backendRole } = response.data;
-
-      if (token) {
+      const { token, role: backendRole, district, department } = response.data;
+      if (token || district || department) {
         localStorage.setItem("authToken", token);
+        localStorage.setItem("district", district);
+        localStorage.setItem("department", department);
       }
 
       if (
@@ -42,7 +43,7 @@ const Home = () => {
         (role === "tenderer" && backendRole !== "Tender_Group")
       ) {
         alert(
-          "Selected role does not match your account role. Please select the correct role."
+          "Selected role does not match your account role. Please select the correct role.",
         );
         return;
       }
