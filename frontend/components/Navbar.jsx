@@ -40,9 +40,6 @@ const Navbar = () => {
         <Link href="/" className="hover:underline">
           Home
         </Link>
-        <button href="/#about" className="hover:underline">
-          Logout
-        </button>
         <button
           className="hover:underline"
           onClick={() => {

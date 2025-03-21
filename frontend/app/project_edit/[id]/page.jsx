@@ -31,7 +31,10 @@ const EditProject = () => {
   }, [id]);
 
   const handleChange = (e) => {
-    setProject({ ...project, [e.target.name]: e.target.value || project[e.target.name] });
+    setProject({
+      ...project,
+      [e.target.name]: e.target.value || project[e.target.name],
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -59,7 +62,9 @@ const EditProject = () => {
     <>
       <Navbar />
       <div className="p-6 max-w-2xl mx-auto bg-white shadow-lg rounded-lg mt-6">
-        <h2 className="text-2xl font-semibold text-center mb-6">Edit Project</h2>
+        <h2 className="text-2xl font-semibold text-center mb-6">
+          Edit Project
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             name="name"
