@@ -33,43 +33,34 @@ export const getProjectById = asyncHandler(async (req, res) => {
 // createProjectByCollector
 export const createProjectByCollector = asyncHandler(async (req, res) => {
   console.log("Hi");
+
   const { name, description, status, startDate, deadline, department, budget } =
     req.body;
 
+  if (
+    ![name, description, status, startDate, deadline, department, budget].every(
+      Boolean,
+    )
+  ) {
+    res.status(400);
+    throw new Error("All fields are required");
+  }
+
+  // Fetch department head
   const departmentHead = await User.findOne({
     role: "Department_Head",
-    district: req.user.district,
+    district: req.user.district, // ✅ Fixed district filtering
+    department: department,
   });
 
-  if (!name) {
-    res.status(400);
-    throw new Error("Name is required");
-  }
+  // Debugging: Check if department heads exist
+  const depthds = await User.find({
+    role: "Department_Head",
+    district: req.user.district, // ✅ Correct district filtering
+  });
 
-  if (!description) {
-    res.status(400);
-    throw new Error("Description is required");
-  }
-  if (!status) {
-    res.status(400);
-    throw new Error("Status is required");
-  }
-  if (!startDate) {
-    res.status(400);
-    throw new Error("Start Date is required");
-  }
-  if (!deadline) {
-    res.status(400);
-    throw new Error("Deadline is required");
-  }
-  if (!department) {
-    res.status(400);
-    throw new Error("Department is required");
-  }
-  if (!budget) {
-    res.status(400);
-    throw new Error("Budget is required");
-  }
+  console.log(depthds);
+
   const project = new Project({
     name,
     description,
@@ -79,15 +70,20 @@ export const createProjectByCollector = asyncHandler(async (req, res) => {
     deadline,
     district: req.user.district,
     department,
-    departmentHead: departmentHead._id,
+    departmentHead: departmentHead ? departmentHead._id : null,
     createdBy: req.user ? req.user._id : null,
   });
 
-  departmentHead.projects.push(project._id);
-  await departmentHead.save();
   console.log(project);
-  const createdProject = await project.save();
 
+  // Save project and associate it with the department head if they exist
+  if (departmentHead) {
+    departmentHead.projects.push(project._id); // ✅ Ensure this field exists in schema
+    await departmentHead.save(); // ✅ Save only if `departmentHead` exists
+  }
+
+  console.log(departmentHead);
+  const createdProject = await project.save();
   res.status(201).json(createdProject);
 });
 
@@ -179,24 +175,46 @@ export const updateProject = asyncHandler(async (req, res) => {
     department,
     departmentHead,
     tenderer,
-    createdBy,
   } = req.body;
 
-  project.name = name || project.name;
-  project.description = description || project.description;
-  project.status = status || project.status;
-  project.startDate = startDate || project.startDate;
-  project.deadline = deadline || project.deadline;
-  project.district = district || project.district;
-  project.department = department || project.department;
-  project.departmentHead = departmentHead || project.departmentHead;
-  project.tenderer = tenderer || project.tenderer;
-  project.createdBy = createdBy || project.createdBy;
+  // ✅ Remove project from old department head (if department is changing)
+  if (
+    department &&
+    department !== project.department &&
+    project.departmentHead
+  ) {
+    await User.findByIdAndUpdate(project.departmentHead, {
+      $pull: { projects: project._id },
+    });
+  }
+
+  // ✅ Update project fields dynamically
+  Object.assign(project, {
+    name: name ?? project.name,
+    description: description ?? project.description,
+    status: status ?? project.status,
+    startDate: startDate ?? project.startDate,
+    deadline: deadline ?? project.deadline,
+    district: district ?? project.district,
+    department: department ?? project.department,
+    departmentHead: departmentHead ?? project.departmentHead,
+    tenderer: tenderer ?? project.tenderer,
+  });
+
+  // ✅ Assign project to new department head (if changed)
+  if (departmentHead) {
+    await User.findByIdAndUpdate(departmentHead, {
+      $addToSet: { projects: project._id },
+    });
+  }
 
   const updatedProject = await project.save();
   res.json(updatedProject);
 });
 
+// @desc    Delete a project
+// @route   DELETE /api/projects/:id
+// @access  Private
 // @desc    Delete a project
 // @route   DELETE /api/projects/:id
 // @access  Private
@@ -208,17 +226,33 @@ export const deleteProject = asyncHandler(async (req, res) => {
     throw new Error("Project not found");
   }
 
+  // ✅ Remove project reference from Department Head
+  if (project.departmentHead) {
+    await User.findByIdAndUpdate(project.departmentHead, {
+      $pull: { projects: project._id },
+    });
+  }
+
+  // ✅ Remove project reference from Tenderer
+  if (project.tenderer) {
+    await User.findByIdAndUpdate(project.tenderer, {
+      $unset: { assignedProject: 1 }, // Remove assigned project field
+      $pull: { projects: project._id }, // Remove from project list
+    });
+  }
+
+  // ✅ Delete project
   await project.deleteOne();
-  res.json({ message: "Project removed" });
+  res.json({ message: "Project removed successfully" });
 });
 
 // @desc    Get projects by district
 // @route   GET /api/projects/district/:district
 // @access  Public
 export const getProjectsByDistrict = asyncHandler(async (req, res) => {
-  console.log(req.params);
+  // console.log(req.params);
   const projects = await Project.find({ district: req.params.district });
-  console.log(projects);
+  // console.log(projects);
   res.json(projects);
 });
 

@@ -15,16 +15,8 @@ const Page = () => {
   const [assignedDepartment, setAssignedDepartment] = useState("");
   const [authToken, setAuthToken] = useState("");
 
-  // Retrieve authToken from localStorage on component mount
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      setAuthToken(token);
-    }
-  }, []);
-
   const router = useRouter();
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const projectData = {
@@ -37,16 +29,17 @@ const Page = () => {
       department: assignedDepartment,
     };
 
+    const token = localStorage.getItem("authToken");
     try {
       const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}api/projects/`, // Ensure URL correctness
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}api/projects/`, // Ensure URL correctness
 
         projectData,
         {
           headers: {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       console.log("Response:", response.data);
@@ -64,7 +57,7 @@ const Page = () => {
       console.error("Error submitting project:", error);
       alert("Failed to add project. Please try again.");
     }
-    router.push('/collector')
+    router.push("/collector");
   };
 
   return (
@@ -167,7 +160,10 @@ const Page = () => {
           </div>
 
           <div>
-            <label htmlFor="assignedDepartment" className="block text-gray-600 mb-1">
+            <label
+              htmlFor="assignedDepartment"
+              className="block text-gray-600 mb-1"
+            >
               Department
             </label>
             <select
@@ -180,15 +176,18 @@ const Page = () => {
               <option value="" disabled>
                 Select Department
               </option>
-              <option value="Rev">Revenue</option>
-              <option value="PW">Public Works</option>
-              <option value="Edu">Education</option>
-              <option value="Agri">Agriculture</option>
-              <option value="Health">Health</option>
+              <option value="revenue">Revenue</option>
+              <option value="public_works">Public Works</option>
+              <option value="education">Education</option>
+              <option value="agriculture">Agriculture</option>
+              <option value="health">Health</option>
             </select>
           </div>
 
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white p-2 rounded"
+          >
             Submit
           </button>
         </form>

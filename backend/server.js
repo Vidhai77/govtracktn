@@ -18,8 +18,8 @@ app.use(
     origin: ["http://localhost:3000", "http://localhost:3001"],
   }),
 ); // Enable CORS (optional, for frontend)
-
 app.use("/api/auth", authRoutes); // Renaming it to /auth since it's for authentication
+app.use(protect);
 app.use("/api/projects", projectRoutes);
 app.use("/api/users", userRoutes);
 // Error handling middleware

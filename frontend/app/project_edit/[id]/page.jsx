@@ -114,19 +114,19 @@ const EditProject = () => {
             onChange={handleChange}
             className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
-          <select
-            name="department"
-            value={project.department}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            <option value="">Select Department</option>
-            <option value="Rev">Revenue</option>
-            <option value="PW">Public Works</option>
-            <option value="Edu">Education</option>
-            <option value="Agri">Agriculture</option>
-            <option value="Health">Health</option>
-          </select>
+          {/* <select */}
+          {/*   name="department" */}
+          {/*   value={project.department} */}
+          {/*   onChange={handleChange} */}
+          {/*   className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" */}
+          {/* > */}
+          {/*   <option value="">Select Department</option> */}
+          {/*   <option value="revenue">Revenue</option> */}
+          {/*   <option value="public_works">Public Works</option> */}
+          {/*   <option value="education">Education</option> */}
+          {/*   <option value="agriculture">Agriculture</option> */}
+          {/*   <option value="health">Health</option> */}
+          {/* </select> */}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition"

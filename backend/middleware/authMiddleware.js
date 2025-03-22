@@ -31,6 +31,7 @@ export const protect = asyncHandler(async (req, res, next) => {
     // If token is invalid/expired, proceed without req.user
     req.user = null;
   }
+  console.log("User : ", req.user._id);
 
   next();
 });
