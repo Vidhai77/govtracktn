@@ -32,3 +32,13 @@ export const getUserById = asyncHandler(async (req, res) => {
   const user = await User.findById(id).populate("projects");
   res.json(user);
 });
+
+export const getUserByAuth = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).populate("projects");
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  console.log(user);
+  res.json(user);
+});
