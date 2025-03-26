@@ -7,6 +7,7 @@ dotenv.config();
 export const protect = asyncHandler(async (req, res, next) => {
   console.log("howdy");
 
+  console.log(req);
   const authHeader = req.headers.authorization;
   console.log(authHeader);
 
