@@ -59,7 +59,9 @@ const Page = () => {
     }
     router.push("/collector");
   };
-
+  console.log(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}api/projects/`, // Ensure URL correctness
+  );
   return (
     <>
       <Navbar />
