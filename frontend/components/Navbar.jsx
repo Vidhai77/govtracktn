@@ -56,22 +56,32 @@ const Navbar = () => {
           </span>
         </div>
 
-        {/* Role-based Button with Logout */}
+        {/* Role-based Button with User Image */}
         <div className="relative group">
-          <button className="bg-indigo-700 text-white px-4 py-2 rounded-full font-semibold flex items-center space-x-2">
-            <span>{userRole}</span>
+          <button className={`flex items-center space-x-2 px-4 py-2 rounded-full font-semibold ${userRole !== "User" ? "bg-indigo-700 text-white" : "bg-transparent text-black"}`}>
+            {userRole === "User" ? (
+              <img
+                src="/icons8-user-24.png" // Default user image
+                alt="User Avatar"
+                className="w-8 h-8 rounded-full"
+              />
+            ) : (
+              <span>{userRole}</span>
+            )}
           </button>
-          <div className="absolute right-0 mt-2 hidden group-hover:block bg-white shadow-lg rounded-lg py-2">
-            <button
-              className="block px-4 py-2 text-indigo-700 hover:bg-gray-200 transition-colors w-full text-left"
-              onClick={() => {
-                localStorage.clear();
-                window.location.href = "/";
-              }}
-            >
-              Logout
-            </button>
-          </div>
+          {userRole !== "User" && (
+            <div className="absolute right-0 mt-2 hidden group-hover:block bg-white shadow-lg rounded-lg py-2">
+              <button
+                className="block px-4 py-2 text-indigo-700 hover:bg-gray-200 transition-colors w-full text-left"
+                onClick={() => {
+                  localStorage.clear();
+                  window.location.href = "/";
+                }}
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>
