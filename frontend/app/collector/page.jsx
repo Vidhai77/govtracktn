@@ -110,6 +110,7 @@ const Page = () => {
               <th className="border p-2">Start Date</th>
               <th className="border p-2">Deadline</th>
               <th className="border p-2">Assigned Department</th>
+              <th className="border p-2">Assigned tenderer</th>
               <th className="border p-2">Actions</th>
             </tr>
           </thead>
@@ -123,6 +124,12 @@ const Page = () => {
                 <td className="border p-2">{formatDate(project?.startDate)}</td>
                 <td className="border p-2">{formatDate(project?.deadline)}</td>
                 <td className="border p-2">{project?.department}</td>
+                <td className="border p-2">
+                  {project?.tenderer
+                    ? project.tenderer.name
+                    : "Not assigned yet"}
+                </td>
+
                 <td className="border p-2 flex justify-center gap-2">
                   <button
                     onClick={() => handleUpdate(project._id)}

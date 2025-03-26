@@ -104,8 +104,8 @@ const DepartmentHeadPage = () => {
                 <td className="border p-2">{project?.description}</td>
                 <td className="border p-2">{project?.status}</td>
                 <td className="border p-2">
-                  {tenderers[project._id] ? (
-                    <span>{tenderers[project._id]}</span>
+                  {project.tenderer ? (
+                    <span>Assigned to {project.tenderer.name}</span>
                   ) : (
                     <button
                       className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"

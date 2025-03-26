@@ -251,7 +251,9 @@ export const deleteProject = asyncHandler(async (req, res) => {
 // @access  Public
 export const getProjectsByDistrict = asyncHandler(async (req, res) => {
   // console.log(req.params);
-  const projects = await Project.find({ district: req.params.district });
+  const projects = await Project.find({
+    district: req.params.district,
+  }).populate("tenderer");
   // console.log(projects);
   res.json(projects);
 });
@@ -267,7 +269,9 @@ export const getProjectsByDepartment = asyncHandler(async (req, res) => {
   console.log("Project IDs:", projectIds);
 
   // Fetch full projects from DB
-  const projects = await Project.find({ _id: { $in: projectIds } });
+  const projects = await Project.find({ _id: { $in: projectIds } }).populate(
+    "tenderer",
+  );
 
   console.log("Fetched Projects:", projects);
   res.json(projects);

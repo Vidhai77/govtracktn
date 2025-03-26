@@ -18,34 +18,38 @@ const TendererPage = () => {
         router.push("/login");
         return;
       }
-
-      if (!tendererId) {
-        console.error("No tenderer ID found");
-        router.push("/");
-        return;
-      }
+      //
+      // if (!tendererId) {
+      //   console.error("No tenderer ID found");
+      //   router.push("/");
+      //   return;
+      // }
 
       try {
         // Fetch projects with tenderer ID in the URL
         const projectsResponse = await fetch(
-          `http://localhost:5000/api/projects/tenderer/${authToken}`,
+          "http://localhost:5000/api/users/auth",
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
-
-        if (!projectsResponse.ok) {
-          throw new Error("Failed to fetch projects");
-        }
+        // if (!projectsResponse.ok) {
+        //   throw new Error("Failed to fetch projects");
+        // }
 
         const projectsData = await projectsResponse.json();
-        console.log("Fetched Tenderer Projects:", projectsData);
+        console.log("Fetched Tenderer Projects:", projectsData?.projects);
 
         // Since the backend returns an array directly, no need for .projects
-        const projectsArray = Array.isArray(projectsData) ? projectsData : [];
-        setProjects(projectsArray);
+        const projectsArray = Array.isArray(projectsData?.projects)
+          ? projectsData.projects
+          : [];
+
+        console.log(projectsArray);
+        setProjects(projectsData?.projects);
+        console.log(projects);
       } catch (error) {
         console.error("Error fetching projects:", error);
         router.push("/"); // Redirect to home on error
@@ -58,7 +62,7 @@ const TendererPage = () => {
   const filteredProjects = projects.filter(
     (project) =>
       project?.name?.toLowerCase().includes(search.toLowerCase()) ||
-      project?._id?.toString().includes(search) // Convert ObjectId to string
+      project?._id?.toString().includes(search), // Convert ObjectId to string
   );
 
   return (
