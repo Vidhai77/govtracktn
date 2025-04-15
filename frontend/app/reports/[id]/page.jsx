@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 
 const ReportsPage = () => {
   const router = useRouter();
-  const { projectId } = useParams();
+  const { id: projectId } = useParams();
   const [project, setProject] = useState(null);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +33,7 @@ const ReportsPage = () => {
         if (res.ok) {
           setProject(data.project);
           setReports(data.project.reports || []);
-          console.log("Fetched Succesfully");
+          console.log("Fetched Successfully:", data);
         } else {
           setError(data.message || "Failed to fetch reports");
         }
@@ -55,14 +55,27 @@ const ReportsPage = () => {
     return new Date(dateString).toLocaleDateString("en-GB");
   };
 
+  const formatBudget = (budget) => {
+    if (!budget) return "N/A";
+    return `₹${budget.toLocaleString()}`;
+  };
+
   return (
     <>
       <Navbar />
       <div className="p-6 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl font-extrabold text-indigo-700">
-            Reports for Project: {project?.name || "Loading..."}
-          </h1>
+          <div>
+            <h1 className="text-4xl font-extrabold text-indigo-700">
+              Reports for Project: {project?.name || "Loading..."}
+            </h1>
+            {project && (
+              <p className="text-lg text-indigo-500 mt-1">
+                Budget: {formatBudget(project.budget)} | Deadline:{" "}
+                {formatDate(project.deadline)}
+              </p>
+            )}
+          </div>
           <button
             className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-all duration-200"
             onClick={() => router.push("/dhead")}
@@ -93,7 +106,9 @@ const ReportsPage = () => {
                   {report.name || "Untitled Report"}
                 </h2>
                 <p className="text-gray-600 mb-3 line-clamp-3">
-                  {report.description || "No description"}
+                  {report.description !== "Nothing"
+                    ? report.description || "No description"
+                    : "No detailed description provided"}
                 </p>
                 <p className="text-sm text-gray-500 mb-3">
                   Submitted on: {formatDate(report.startDate)}
@@ -105,12 +120,18 @@ const ReportsPage = () => {
                   {report.proofs && report.proofs.length > 0 ? (
                     <div className="grid grid-cols-2 gap-2">
                       {report.proofs.map((url, index) => (
-                        <img
+                        <a
                           key={index}
-                          src={url}
-                          alt={`Proof ${index + 1}`}
-                          className="w-full h-24 object-cover rounded-lg"
-                        />
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <img
+                            src={url}
+                            alt={`Proof ${index + 1}`}
+                            className="w-full h-24 object-cover rounded-lg hover:opacity-80 transition-opacity duration-200"
+                          />
+                        </a>
                       ))}
                     </div>
                   ) : (

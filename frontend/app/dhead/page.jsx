@@ -55,6 +55,7 @@ const DepartmentHeadPage = () => {
                 `http://localhost:5000/api/users/${project.tenderer}`
               );
               const data = await res.json();
+              console.log(data);
               tendererData[project._id] = data.name || "Unknown";
             } catch (error) {
               console.error(
@@ -207,30 +208,34 @@ const DepartmentHeadPage = () => {
                           ? `₹${project.budget.toLocaleString()}`
                           : "N/A"}
                       </td>
-                      <td className="border-b p-4 flex gap-2 items-center">
-                        {project.tenderer ? (
-                          <span className="text-gray-600">
-                            Assigned to{" "}
-                            <span className="font-medium text-indigo-600">
-                              {tenderers[project._id] || "Fetching..."}
+                      <td className="border-b p-4">
+                        <div className="flex justify-between items-center gap-2">
+                          {project.tenderer ? (
+                            <span className="text-gray-600">
+                              Assigned to{" "}
+                              <span className="font-medium text-indigo-600">
+                                {tenderers[project._id] || "Fetching..."}
+                              </span>
                             </span>
-                          </span>
-                        ) : (
+                          ) : (
+                            <button
+                              className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1 rounded-full shadow-sm transition-all duration-200"
+                              onClick={() =>
+                                router.push(`/assign_tender?id=${project._id}`)
+                              }
+                            >
+                              Assign Tenderer
+                            </button>
+                          )}
                           <button
-                            className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1 rounded-full shadow-sm transition-all duration-200"
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full shadow-sm transition-all duration-200"
                             onClick={() =>
-                              router.push(`/assign_tender?id=${project._id}`)
+                              router.push(`/reports/${project._id}`)
                             }
                           >
-                            Assign Tenderer
+                            View Reports
                           </button>
-                        )}
-                        <button
-                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full shadow-sm transition-all duration-200"
-                          onClick={() => router.push(`/reports/${project._id}`)}
-                        >
-                          View Reports
-                        </button>
+                        </div>
                       </td>
                     </tr>
                   ))

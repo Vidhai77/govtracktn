@@ -53,7 +53,7 @@ const AssignTenderPage = () => {
         }
       );
 
-      console.log("Response:", response.data);
+      // console.log("Response:", response.data);
       alert("Tenderer assigned successfully!");
       router.push("/dhead"); // Redirect after submission
     } catch (error) {
@@ -70,7 +70,9 @@ const AssignTenderPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 font-semibold mb-1">Name</label>
+            <label className="block text-gray-700 font-semibold mb-1">
+              Name
+            </label>
             <input
               type="text"
               name="name"
@@ -83,7 +85,9 @@ const AssignTenderPage = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold mb-1">Email</label>
+            <label className="block text-gray-700 font-semibold mb-1">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -96,7 +100,9 @@ const AssignTenderPage = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold mb-1">Phone Number</label>
+            <label className="block text-gray-700 font-semibold mb-1">
+              Phone Number
+            </label>
             <input
               type="tel"
               name="phone"
