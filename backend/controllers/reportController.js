@@ -44,8 +44,9 @@ export const createReport = async (req, res) => {
     await Promise.all([report.save(), project.save()]);
 
     // 📦 Populate reports if needed
-    const populatedProject =
-      await Project.findById(projectId).populate("reports");
+    const populatedProject = await Project.findById(projectId).populate(
+      "reports"
+    );
 
     res.status(200).json({
       message: "Report generated successfully ✅",

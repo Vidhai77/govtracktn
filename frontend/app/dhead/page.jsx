@@ -31,7 +31,7 @@ const DepartmentHeadPage = () => {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
-          },
+          }
         );
         const data = await res.json();
         console.log("Fetched Projects:", data);
@@ -52,19 +52,19 @@ const DepartmentHeadPage = () => {
           if (project.tenderer) {
             try {
               const res = await fetch(
-                `http://localhost:5000/api/users/${project.tenderer}`,
+                `http://localhost:5000/api/users/${project.tenderer}`
               );
               const data = await res.json();
               tendererData[project._id] = data.name || "Unknown";
             } catch (error) {
               console.error(
                 `Error fetching tenderer ${project.tenderer}:`,
-                error,
+                error
               );
               tendererData[project._id] = "Error fetching";
             }
           }
-        }),
+        })
       );
       setTenderers(tendererData);
     };
@@ -85,11 +85,16 @@ const DepartmentHeadPage = () => {
       (budgetRange === "low"
         ? project?.budget < 100000
         : budgetRange === "medium"
-          ? project?.budget >= 100000 && project?.budget < 1000000
-          : project?.budget >= 1000000);
+        ? project?.budget >= 100000 && project?.budget < 1000000
+        : project?.budget >= 1000000);
 
     return matchesSearch && matchesStatus && matchesBudget;
   });
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-GB");
+  };
 
   return (
     <>
@@ -186,12 +191,12 @@ const DepartmentHeadPage = () => {
                             project?.status === "Completed"
                               ? "bg-green-100 text-green-700"
                               : project?.status === "In Progress"
-                                ? "bg-blue-100 text-blue-700"
-                                : project?.status === "Pending"
-                                  ? "bg-yellow-100 text-yellow-700"
-                                  : project?.status === "Planning"
-                                    ? "bg-purple-100 text-purple-700"
-                                    : "bg-gray-100 text-gray-700"
+                              ? "bg-blue-100 text-blue-700"
+                              : project?.status === "Pending"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : project?.status === "Planning"
+                              ? "bg-purple-100 text-purple-700"
+                              : "bg-gray-100 text-gray-700"
                           }`}
                         >
                           {project?.status || "N/A"}
@@ -202,12 +207,12 @@ const DepartmentHeadPage = () => {
                           ? `₹${project.budget.toLocaleString()}`
                           : "N/A"}
                       </td>
-                      <td className="border-b p-4">
+                      <td className="border-b p-4 flex gap-2 items-center">
                         {project.tenderer ? (
                           <span className="text-gray-600">
                             Assigned to{" "}
                             <span className="font-medium text-indigo-600">
-                              {project.tenderer.name || "Fetching..."}
+                              {tenderers[project._id] || "Fetching..."}
                             </span>
                           </span>
                         ) : (
@@ -220,6 +225,14 @@ const DepartmentHeadPage = () => {
                             Assign Tenderer
                           </button>
                         )}
+                        <button
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full shadow-sm transition-all duration-200"
+                          onClick={() =>
+                            router.push(`/api/reports/${project._id}`)
+                          }
+                        >
+                          View Reports
+                        </button>
                       </td>
                     </tr>
                   ))

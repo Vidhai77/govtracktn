@@ -7,6 +7,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const [userRole, setUserRole] = useState("");
   const [userName, setUserName] = useState("User");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // New state for dropdown visibility
 
   useEffect(() => {
     const storedUser = localStorage.getItem("loginId") || "User"; // Get login ID from local storage
@@ -22,6 +23,11 @@ const Navbar = () => {
     }
   }, [pathname]);
 
+  // Toggle dropdown visibility
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
   return (
     <nav className="bg-white text-black p-4 flex items-center justify-between sticky top-0 z-50 shadow-md shadow-indigo-200">
       {/* Left Section */}
@@ -32,13 +38,19 @@ const Navbar = () => {
           className="w-14 h-14 transition-transform duration-300 hover:scale-105"
         />
         <div className="text-indigo-700">
-          <span className="text-xl font-bold block leading-tight">தமிழ்நாடு அரசு</span>
-          <span className="text-xl font-semibold">Government of Tamil Nadu</span>
+          <span className="text-xl font-bold block leading-tight">
+            தமிழ்நாடு அரசு
+          </span>
+          <span className="text-xl font-semibold">
+            Government of Tamil Nadu
+          </span>
         </div>
       </div>
 
       {/* Center Section - Title */}
-      <h1 className="text-3xl font-extrabold text-green-600 tracking-tight">GovTrackTN</h1>
+      <h1 className="text-3xl font-extrabold text-green-600 tracking-tight">
+        GovTrackTN
+      </h1>
 
       {/* Right Section */}
       <div className="flex items-center space-x-6">
@@ -57,8 +69,15 @@ const Navbar = () => {
         </div>
 
         {/* Role-based Button with User Image */}
-        <div className="relative group">
-          <button className={`flex items-center space-x-2 px-4 py-2 rounded-full font-semibold ${userRole !== "User" ? "bg-indigo-700 text-white" : "bg-transparent text-black"}`}>
+        <div className="relative">
+          <button
+            onClick={toggleDropdown} // Toggle dropdown on click
+            className={`flex items-center space-x-2 px-4 py-2 rounded-full font-semibold ${
+              userRole !== "User"
+                ? "bg-indigo-700 text-white"
+                : "bg-transparent text-black"
+            }`}
+          >
             {userRole === "User" ? (
               <img
                 src="/icons8-user-24.png" // Default user image
@@ -69,19 +88,20 @@ const Navbar = () => {
               <span>{userRole}</span>
             )}
           </button>
-          {userRole !== "User" && (
-            <div className="absolute right-0 mt-2 hidden group-hover:block bg-white shadow-lg rounded-lg py-2">
-              <button
-                className="block px-4 py-2 text-indigo-700 hover:bg-gray-200 transition-colors w-full text-left"
-                onClick={() => {
-                  localStorage.clear();
-                  window.location.href = "/";
-                }}
-              >
-                Logout
-              </button>
-            </div>
-          )}
+          {userRole !== "User" &&
+            isDropdownOpen && ( // Show dropdown only when clicked and state is true
+              <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg py-2 transition-opacity duration-300 ease-in-out">
+                <button
+                  className="block px-4 py-2 text-indigo-700 hover:bg-gray-200 transition-colors w-full text-left"
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.href = "/";
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
         </div>
       </div>
     </nav>
