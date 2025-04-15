@@ -227,9 +227,7 @@ const DepartmentHeadPage = () => {
                         )}
                         <button
                           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full shadow-sm transition-all duration-200"
-                          onClick={() =>
-                            router.push(`/api/reports/${project._id}`)
-                          }
+                          onClick={() => router.push(`/reports/${project._id}`)}
                         >
                           View Reports
                         </button>

@@ -14,6 +14,7 @@ const ReportsPage = () => {
   useEffect(() => {
     const fetchReports = async () => {
       const authToken = localStorage.getItem("authToken");
+
       if (!authToken) {
         router.push("/login");
         return;
@@ -21,7 +22,7 @@ const ReportsPage = () => {
 
       try {
         const res = await fetch(
-          `http://localhost:5000/api/report/${projectId}`,
+          `http://localhost:5000/api/reports/${projectId}`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -32,6 +33,7 @@ const ReportsPage = () => {
         if (res.ok) {
           setProject(data.project);
           setReports(data.project.reports || []);
+          console.log("Fetched Succesfully");
         } else {
           setError(data.message || "Failed to fetch reports");
         }
@@ -63,7 +65,7 @@ const ReportsPage = () => {
           </h1>
           <button
             className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-all duration-200"
-            onClick={() => router.push("/department_head")}
+            onClick={() => router.push("/dhead")}
           >
             Back to Dashboard
           </button>
