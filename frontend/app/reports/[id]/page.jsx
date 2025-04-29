@@ -78,7 +78,15 @@ const ReportsPage = () => {
           </div>
           <button
             className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-all duration-200"
-            onClick={() => router.push("/dhead")}
+            onClick={() => {
+              const role = localStorage.getItem("role")
+              console.log(role)
+
+
+              if (role == "Collector") router.push("/collector")
+              else
+                router.push("/dhead")
+            }}
           >
             Back to Dashboard
           </button>

@@ -24,6 +24,7 @@ const Page = () => {
         );
         const data = await res.json();
         setProjects(data);
+
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
@@ -95,6 +96,8 @@ const Page = () => {
   const addProject = () => {
     router.push("/project_crud");
   };
+
+  console.log(projects)
 
   return (
     <>
@@ -262,6 +265,15 @@ const Page = () => {
                         >
                           Delete
                         </button>
+
+                          <button
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full shadow-sm transition-all duration-200"
+                            onClick={() =>
+                              router.push(`/reports/${project._id}`)
+                            }
+                          >
+                            View Reports
+                          </button>
                       </td>
                     </tr>
                   ))

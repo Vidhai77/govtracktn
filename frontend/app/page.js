@@ -34,6 +34,7 @@ const Home = () => {
         localStorage.setItem("authToken", token);
         localStorage.setItem("district", district);
         localStorage.setItem("department", department);
+        localStorage.setItem("role", backendRole)
       }
 
       if (

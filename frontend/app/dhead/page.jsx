@@ -23,7 +23,7 @@ const DepartmentHeadPage = () => {
 
       setDistrict(districtFromStorage);
       setDepartment(departmentFromStorage);
-
+console.log(departmentFromStorage)
       try {
         const res = await fetch(
           `http://localhost:5000/api/projects/department/${departmentFromStorage}`,
@@ -51,8 +51,9 @@ const DepartmentHeadPage = () => {
         projects.map(async (project) => {
           if (project.tenderer) {
             try {
+              console.log(project)
               const res = await fetch(
-                `http://localhost:5000/api/users/${project.tenderer}`
+                `http://localhost:5000/api/users/${project.tenderer._id}`
               );
               const data = await res.json();
               console.log(data);
@@ -214,7 +215,7 @@ const DepartmentHeadPage = () => {
                             <span className="text-gray-600">
                               Assigned to{" "}
                               <span className="font-medium text-indigo-600">
-                                {tenderers[project._id] || "Fetching..."}
+                                {"" || "Fetching..."}
                               </span>
                             </span>
                           ) : (
